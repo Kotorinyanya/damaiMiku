@@ -84,17 +84,24 @@ def handle_id():
     booker = None
     while None == booker:
         booker = choose('/html/body/div[3]/div[3]/div[3]/div[2]/div[2]/div/div/h2/a')
+        if booker == None:
+            booker = choose('/html/body/div[3]/div[3]/div[2]/div[2]/div/a')
     driver.execute_script("arguments[0].scrollIntoView();", booker)
     booker.click()
     # 选择、确定
     select = None
     while None == select:
         select = choose('/html/body/div[3]/div[3]/div[13]/div/div[2]/div/div[2]/div/table/tbody/tr/label/td[1]/input')
+        if select == None:
+            select = choose(
+                '/html/body/div[3]/div[3]/div[12]/div/div[2]/div/div[2]/div/table/tbody/tr/label/td[1]/input')
     driver.execute_script("arguments[0].scrollIntoView();", select)
     select.click()
     confirm = None
     while None == confirm:
         confirm = choose('/html/body/div[3]/div[3]/div[13]/div/div[2]/div/p/div/a')
+        if confirm == None:
+            confirm = choose('/html/body/div[3]/div[3]/div[12]/div/div[2]/div/p/div/a')
     driver.execute_script("arguments[0].scrollIntoView();", confirm)
     confirm.click()
 
