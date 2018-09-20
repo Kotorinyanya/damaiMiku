@@ -9,9 +9,9 @@ from time import sleep
 import pickle
 
 # URL = "https://piao.damai.cn/160275.html?spm=a2oeg.search_category.0.0.38e34fe0L4ybGg&clicktitle=%E6%83%8A%E5%A4%A9%E9%AD%94%E7%9B%97%E5%9B%A2%EF%BC%88Now%20You%20See%20Me%EF%BC%89Live%20%E4%B8%96%E7%95%8C%E5%B7%A1%E6%BC%94%E6%88%90%E9%83%BD%E7%AB%99"  # PC页面
-URL = "https://piao.damai.cn/163609.html?spm=a2oeg.search_category.0.0.1e515b09xzIGCC"
+URL = "https://piao.damai.cn/164018.html?spm=a2oeg.search_category.0.0.1e515b09FIP1nE&clicktitle=%E6%9C%AA%E6%9D%A5%E6%9C%89%E4%BD%A0%C2%B7%E5%88%9D%E9%9F%B3%E6%9C%AA%E6%9D%A52018%E5%B7%A1%E5%9B%9E%E6%BC%94%E5%94%B1%E4%BC%9A%20%E6%88%90%E9%83%BD%E7%AB%99%E3%80%9010.20%2019%3A30%E3%80%91"
 
-driver = webdriver.Chrome(executable_path='/Users/srt_kid/Downloads/chromedriver')
+driver = webdriver.Chrome()
 # 设置等待时间
 wait = WebDriverWait(driver, 0.3)
 driver.get(URL)
@@ -38,17 +38,17 @@ def choose(seletor):
 
 
 def choose_time_and_price():
-    time = None
-    while None == time:
-        time = choose('//*[@id="performList"]/div/ul/li[1]')
-    time.click()
+    # time = None
+    # while None == time:
+    #     time = choose('//*[@id="performList"]/div/ul/li[1]')
+    # time.click()
 
     price = None
     while None == price:
-        price = choose('//*[@id="priceList"]/div/ul/li[2]')
+        price = choose('//*[@id="priceList"]/div/ul/li[1]')
     price.click()
 
-    sleep(1)
+    sleep(0.5)
 
 
 def book_ticket():
@@ -62,9 +62,8 @@ def book_ticket():
         plus = choose('//*[@id="cartList"]/div[1]/ul/li/span[3]/a[2]')
         if plus == None:
             driver.refresh()
+            sleep(0.5)
             choose_time_and_price()
-    # for i in range(10):
-    #     plus.click()
 
     buybtn = None
     while None == buybtn:
@@ -119,10 +118,12 @@ def main():
             book_ticket()
             status = confirm_booking()
             if status == 'OK':
+                sleep(120)
                 exit(0)
         except Exception as e:
             print(e)
             continue
+
 
 
 if __name__ == '__main__':
