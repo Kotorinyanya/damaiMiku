@@ -8,7 +8,7 @@ import time
 from time import sleep
 import pickle
 
-URL = "https://show.bilibili.com/platform/detail.html?id=17824"
+URL = "https://show.bilibili.com/platform/detail.html?id=17824" # 测试用抢票链接
 
 driver = webdriver.Chrome()
 # 设置等待时间
@@ -17,9 +17,9 @@ driver.get(URL)
 
 
 def login():
-    # 登登登、登陆泥🐎啊，给你60秒，自己手动登陆！
-    # 登陆完把cookies存下来
-    sleep(60)
+    # 登登登、有验证码自动登陆泥🐎啊，给泥30秒，自己手动登
+    # 登陆完把cookies存下来（bilibili好像cookies过期很快
+    sleep(30)
     pickle.dump(driver.get_cookies(), open("cookies.pkl", "wb"))
 
 
@@ -42,86 +42,66 @@ def choose_time_and_price():
     #     time = choose('//*[@id="performList"]/div/ul/li[1]')
     # time.click()
 
-
-    time = choose('//*[@class="screens"]/div[0]')
+    print("choosing time...")
+    # time = choose('//li[@class="screens"]/div[1]')
+    time = choose("//*[contains(text(), '7月27日 19：30')]")
+    print(time)
     time.click()
 
-    price = choose('//*[@class="tickets"]/div[3]')
+    print("choosing price...")
+    # price = choose('//li[@class="tickets"]/div[0]')
+    price = choose("//*[contains(text(), '¥980(980票价)')]")
     price.click()
 
     sleep(0.5)
 
-
-def book_ticket():
+def load_cookies():
     # 使用cookies储存登陆信息
     cookies = pickle.load(open("cookies.pkl", "rb"))
     for cookie in cookies:
         driver.add_cookie(cookie)
 
-    buy = None
-    while None == buy:
-        buy = choose('//*[@class="product-buy"]')
-        if buy == None:
+    sleep(2)
+
+def book_ticket():
+
+    load_cookies() # bilibili貌似不能加载cookies登陆，有时需要开头手动登陆
+
+    buy, submit = None, None
+    while True:
+        try:
+            print('refreshing...')
             driver.refresh()
             sleep(0.5)
             choose_time_and_price()
-    buy.click()
 
-
-def confirm_booking():
-    submit = None
-    while None == submit:
-        submit = choose('//*[@id="confirm-paybtn"]')
-    driver.execute_script("arguments[0].scrollIntoView();", submit)
-    submit.click()
-    return 'OK'
-
-
-def handle_id():
-    # 什么JB玩意儿？为啥不同场次的实名认证按钮会不一样？？
-    # 我不管了，别用这个JB函数，有实名认证要刷验证码也买不了
-
-    # 处理实名认证
-    # 选择购票人
-    booker = None
-    while None == booker:
-        booker = choose('/html/body/div[3]/div[3]/div[3]/div[2]/div[2]/div/div/h2/a')
-        if booker == None:
-            booker = choose('/html/body/div[3]/div[3]/div[2]/div[2]/div/a')
-    driver.execute_script("arguments[0].scrollIntoView();", booker)
-    booker.click()
-    # 选择、确定
-    select = None
-    while None == select:
-        select = choose('/html/body/div[3]/div[3]/div[13]/div/div[2]/div/div[2]/div/table/tbody/tr/label/td[1]/input')
-        if select == None:
-            select = choose(
-                '/html/body/div[3]/div[3]/div[12]/div/div[2]/div/div[2]/div/table/tbody/tr/label/td[1]/input')
-    driver.execute_script("arguments[0].scrollIntoView();", select)
-    select.click()
-    confirm = None
-    while None == confirm:
-        confirm = choose('/html/body/div[3]/div[3]/div[13]/div/div[2]/div/p/div/a')
-        if confirm == None:
-            confirm = choose('/html/body/div[3]/div[3]/div[12]/div/div[2]/div/p/div/a')
-    driver.execute_script("arguments[0].scrollIntoView();", confirm)
-    confirm.click()
+            print("choosing buy...")
+            # buy = choose('//div[@class="product-buy-wrapper"]/div[0]')
+            buy = choose("//*[contains(text(), '立即购票')]")
+            if buy is not None:
+                buy.click()
+                for i in range(10): # 10 tries
+                    print("choosing submit")
+                    submit = choose("//div[@class='confirm-paybtn active']")
+                    # driver.execute_script("arguments[0].scrollIntoView();", submit)
+                    if submit is not None:
+                        submit.click()
+                        return 'OK'
+        except Exception as e:
+            print(e)
+            return 'NG'
 
 
 def main():
-    while True:
-        try:
-            book_ticket()
-            status = confirm_booking()
-            if status == 'OK':
-                sleep(120)
-                exit(0)
-        except Exception as e:
-            print(e)
-            continue
+    status = 'NG'
+    while status != 'OK':
+        status = book_ticket()
+        if status == 'OK':
+            sleep(120)
+            exit(0)
 
 
 
 if __name__ == '__main__':
-    login()
+    login() # 第一次使用调用login()创建cookies
     main()
