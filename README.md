@@ -3,4 +3,4 @@
 
 # 使用方法
 
-安装selenium和chromedriver等相关依赖进代码该参数然后执行
+安装selenium和chromedriver等相关依赖，进代码改参数，然后执行
