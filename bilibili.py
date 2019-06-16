@@ -8,7 +8,7 @@ import time
 from time import sleep
 import pickle
 
-URL = "https://show.bilibili.com/platform/detail.html?id=17824" # 测试用抢票链接
+URL = "https://show.bilibili.com/platform/detail.html?id=18533" # 测试用抢票链接
 
 driver = webdriver.Chrome()
 # 设置等待时间
@@ -44,13 +44,12 @@ def choose_time_and_price():
 
     print("choosing time...")
     # time = choose('//li[@class="screens"]/div[1]')
-    time = choose("//*[contains(text(), '7月27日 19：30')]")
-    print(time)
+    time = choose("//*[contains(text(), '8月2日')]")
     time.click()
 
     print("choosing price...")
     # price = choose('//li[@class="tickets"]/div[0]')
-    price = choose("//*[contains(text(), '¥980(980票价)')]")
+    price = choose("//*[contains(text(), '¥1280(S席 1280元)')]")
     price.click()
 
     sleep(0.5)
