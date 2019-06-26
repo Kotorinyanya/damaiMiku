@@ -9,11 +9,11 @@ from time import sleep
 import pickle
 
 URL = "https://show.bilibili.com/platform/detail.html?id=18533" # 测试用抢票链接
+# URL = "https://show.bilibili.com/platform/detail.html?id=18494"
 
 driver = webdriver.Chrome()
 # 设置等待时间
-wait = WebDriverWait(driver, 0.3)
-driver.get(URL)
+wait = WebDriverWait(driver, 0.1)
 
 
 def login():
@@ -49,10 +49,10 @@ def choose_time_and_price():
 
     print("choosing price...")
     # price = choose('//li[@class="tickets"]/div[0]')
-    price = choose("//*[contains(text(), '¥1280(S席 1280元)')]")
+    price = choose("//*[contains(text(), '¥1280')]")
     price.click()
 
-    sleep(0.5)
+    sleep(0)
 
 def load_cookies():
     # 使用cookies储存登陆信息
@@ -71,8 +71,12 @@ def book_ticket():
         try:
             print('refreshing...')
             driver.refresh()
-            sleep(0.5)
+            # sleep(0.2)
             choose_time_and_price()
+
+            print('choosing plus...')
+            plus = driver.find_elements_by_class_name("count-plus")[0]
+            plus.click()
 
             print("choosing buy...")
             # buy = choose('//div[@class="product-buy-wrapper"]/div[0]')
@@ -94,6 +98,7 @@ def book_ticket():
 def main():
     status = 'NG'
     while status != 'OK':
+        driver.get(URL)
         status = book_ticket()
         if status == 'OK':
             sleep(120)
@@ -102,5 +107,5 @@ def main():
 
 
 if __name__ == '__main__':
-    login() # 第一次使用调用login()创建cookies
+    # login() # 第一次使用调用login()创建cookies
     main()
