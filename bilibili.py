@@ -95,7 +95,6 @@ def book_ticket():
             print(e)
             return 'NG'
 
-
 def main():
     status = 'NG'
     while status != 'OK':
