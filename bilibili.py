@@ -14,6 +14,7 @@ URL = "https://show.bilibili.com/platform/detail.html?id=18533" # 测试用抢�
 driver = webdriver.Chrome()
 # 设置等待时间
 wait = WebDriverWait(driver, 0.1)
+driver.get(URL)
 
 
 def login():
@@ -107,5 +108,6 @@ def main():
 
 
 if __name__ == '__main__':
-    # login() # 第一次使用调用login()创建cookies
+    login() # 第一次使用调用login()创建cookies
     main()
+
